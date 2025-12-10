@@ -14,8 +14,10 @@ const PORT = process.env.PORT || 5000;
 
 // Middleware
 app.use(cors({
-    origin: process.env.CLIENT_URL || 'http://localhost:5173',
-    credentials: true
+    origin: '*', // Allow all origins for now
+    credentials: true,
+    methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+    allowedHeaders: ['Content-Type', 'Authorization']
 }));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
@@ -69,25 +71,27 @@ app.use((err, req, res, next) => {
     });
 });
 
-// Start server
-app.listen(PORT, () => {
-    console.log('='.repeat(50));
-    console.log('🏗️  Construction Mini ERP Server');
-    console.log('='.repeat(50));
-    console.log(`🚀 Server running on http://localhost:${PORT}`);
-    console.log(`📊 Environment: ${process.env.NODE_ENV || 'development'}`);
-    console.log(`🔗 API Base: http://localhost:${PORT}/api`);
-    console.log('='.repeat(50));
-    console.log('Available endpoints:');
-    console.log('  - POST   /api/auth/register');
-    console.log('  - POST   /api/auth/login');
-    console.log('  - GET    /api/projects');
-    console.log('  - POST   /api/projects');
-    console.log('  - GET    /api/finance/invoices');
-    console.log('  - POST   /api/finance/invoices');
-    console.log('  - GET    /api/insights/dashboard');
-    console.log('  - GET    /api/insights/risk/:id');
-    console.log('='.repeat(50));
-});
+// Only start server if not in Vercel environment
+if (process.env.VERCEL !== '1') {
+    app.listen(PORT, () => {
+        console.log('='.repeat(50));
+        console.log('🏗️  Construction Mini ERP Server');
+        console.log('='.repeat(50));
+        console.log(`🚀 Server running on http://localhost:${PORT}`);
+        console.log(`📊 Environment: ${process.env.NODE_ENV || 'development'}`);
+        console.log(`🔗 API Base: http://localhost:${PORT}/api`);
+        console.log('='.repeat(50));
+        console.log('Available endpoints:');
+        console.log('  - POST   /api/auth/register');
+        console.log('  - POST   /api/auth/login');
+        console.log('  - GET    /api/projects');
+        console.log('  - POST   /api/projects');
+        console.log('  - GET    /api/finance/invoices');
+        console.log('  - POST   /api/finance/invoices');
+        console.log('  - GET    /api/insights/dashboard');
+        console.log('  - GET    /api/insights/risk/:id');
+        console.log('='.repeat(50));
+    });
+}
 
 export default app;
